@@ -43,7 +43,7 @@ class SimpleCollaborativeCallback(CollaborativeCallback):
 
 
 def main():
-    authorizer = authorize_with_huggingface()
+    authorizer = #None authorize_with_huggingface()
     parser = HfArgumentParser((AlbertTrainingArguments, DatasetArguments, CollaborationArguments, AveragerArguments))
 
     training_args, dataset_args, collaboration_args, averager_args = parser.parse_args_into_dataclasses()
@@ -67,7 +67,7 @@ def main():
     training_dataset = make_lazy_wikioscar_dataset(tokenizer, shuffle_seed=hash(random.random()) % 2 ** 31)
 
     # This data collator will take care of randomly masking the tokens.
-    data_collator = AlbertDataCollatorForWholeWordMask(
+    data_collator = DataCollatorForLanguageModeling(
         tokenizer=tokenizer, pad_to_multiple_of=training_args.pad_to_multiple_of)
 
     tpu_manager = TPUManager(model, dataset=training_dataset, collate_fn=data_collator,
