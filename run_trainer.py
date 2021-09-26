@@ -27,7 +27,7 @@ from lib.training.noop import NoOpScheduler, IgnoreGradManipulations
 from lib.training.offload import OffloadOptimizer
 
 from data import make_lazy_wikioscar_dataset
-from data_collator import AlbertDataCollatorForWholeWordMask
+from transformers import DataCollatorForLanguageModeling
 from arguments import CollaborationArguments, DatasetArguments, AlbertTrainingArguments, AveragerArguments
 import utils
 from huggingface_auth import authorize_with_huggingface
@@ -126,7 +126,7 @@ class TrainerWithIndependentShuffling(Trainer):
 
 
 def main():
-    authorizer = authorize_with_huggingface()
+    authorizer = None # authorize_with_huggingface()
     parser = HfArgumentParser((AlbertTrainingArguments, DatasetArguments, CollaborationArguments, AveragerArguments))
     training_args, dataset_args, collaboration_args, averager_args = parser.parse_args_into_dataclasses()
 
@@ -185,7 +185,7 @@ def main():
     training_dataset = make_lazy_wikioscar_dataset(tokenizer, shuffle_seed=hash(local_public_key) % 2 ** 31)
 
     # This data collator will take care of randomly masking the tokens.
-    data_collator = AlbertDataCollatorForWholeWordMask(
+    data_collator = DataCollatorForLanguageModeling(
         tokenizer=tokenizer, pad_to_multiple_of=training_args.pad_to_multiple_of)
 
     # Note: the code below creates the trainer with dummy scheduler and removes some callbacks.
